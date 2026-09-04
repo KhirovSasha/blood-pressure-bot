@@ -21,7 +21,17 @@ const admins = process.env.ADMINS.split(",").map(x => x.trim());
 const isValidUser = (userId) => admins.includes(userId.toString());
 const patientID = process.env.PATIENT_ID;
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, {
+  polling: {
+    interval: 1000,
+    autoStart: true,
+    params: { timeout: 10 }
+  }
+});
+
+bot.on('polling_error', (err) => {
+  console.error('polling error:', err.code, err.message);
+});
 const userState = {};
 
 // Chart.js setup
